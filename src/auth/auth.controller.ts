@@ -46,4 +46,28 @@ export class AuthController {
   async login(@Body() loginRequestDTO: LoginRequestDto): Promise<JwtDto> {
     return this.authService.login(loginRequestDTO);
   }
+
+  @Post('register-admin')
+  @HttpCode(201)
+  @ApiOperation({ summary: 'Register a new admin user' })
+  @ApiResponse({
+    status: 201,
+    description: 'Admin user successfully registered',
+  })
+  @ApiResponse({ status: 409, description: 'Email already registered' })
+  /**
+   * Register a new admin user. This endpoint returns a JWT token
+   * which can be used to authenticate the user in subsequent requests.
+   *
+   * @param registerRequestDTO The information about the user to register.
+   * @returns A JWT token which can be used to authenticate the user.
+   */
+  async registerAdmin(
+    @Body() registerRequestDTO: RegisterRequestDto,
+  ): Promise<JwtDto> {
+    return this.authService.register({
+      role: Role.ADMIN,
+      ...registerRequestDTO,
+    });
+  }
 }

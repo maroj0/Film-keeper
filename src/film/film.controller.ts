@@ -7,19 +7,24 @@ import {
   UseGuards,
   Put,
   Delete,
+  Request,
+  UseInterceptors,
 } from '@nestjs/common';
 import { FilmService } from './film.service';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { JwtGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateFilmDto } from './dto/film-request.dto';
-import { Roles } from '../decorator/role.decorator';
-import { Role } from '../auth/db/auth.schema';
 import { FilmResponseDto } from './dto/film-response.dto';
 import { Film } from './db/film.schema';
+import { AttachUserDataInterceptor } from 'src/interceptor/user.interceptor';
+import { ApiRequest } from 'src/types/apiRequest';
+import { Roles } from 'src/decorator/role.decorator';
+import { Role } from 'src/auth/db/auth.schema';
 
 @Controller('films')
 @ApiBearerAuth('JWT-auth')
 @UseGuards(JwtGuard)
+@UseInterceptors(AttachUserDataInterceptor)
 export class FilmController {
   constructor(private readonly filmService: FilmService) {}
 
@@ -34,8 +39,8 @@ export class FilmController {
     return this.filmService.findAll();
   }
 
-  @Roles(Role.USER)
   @Get(':id')
+  @Roles(Role.USER)
   @ApiOperation({ summary: 'Get film by ID' })
   @ApiResponse({
     status: 200,
@@ -43,12 +48,15 @@ export class FilmController {
     type: FilmResponseDto,
   })
   @ApiResponse({ status: 404, description: 'Film not found' })
-  async getById(@Param('id') id: string): Promise<FilmResponseDto> {
+  async getById(
+    @Request() req: ApiRequest,
+    @Param('id') id: string,
+  ): Promise<FilmResponseDto> {
     return this.filmService.findOne(id);
   }
 
-  @Roles(Role.ADMIN)
   @Post()
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Create a new film' })
   @ApiResponse({
     status: 201,
@@ -60,8 +68,8 @@ export class FilmController {
     return this.filmService.create(createFilmDto);
   }
 
-  @Roles(Role.ADMIN)
   @Put(':id')
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Update an existing film' })
   @ApiResponse({
     status: 200,
@@ -73,8 +81,8 @@ export class FilmController {
     return this.filmService.update(id, updateFilmDto);
   }
 
-  @Roles(Role.ADMIN)
   @Delete(':id')
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Delete a film by ID' })
   @ApiResponse({ status: 200, description: 'Film deleted successfully' })
   @ApiResponse({ status: 404, description: 'Film not found' })
@@ -82,8 +90,8 @@ export class FilmController {
     return this.filmService.delete(id);
   }
 
-  @Roles(Role.USER)
   @Get('search/:title')
+  @Roles(Role.USER)
   @ApiOperation({ summary: 'Search film by title' })
   @ApiResponse({
     status: 200,
@@ -95,8 +103,8 @@ export class FilmController {
     return this.filmService.findByTitle(title);
   }
 
-  @Roles(Role.ADMIN)
   @Get('star_wars')
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Update Star Wars films' })
   @ApiResponse({ status: 200, description: 'Star Wars films updated' })
   async updateStarWars() {

@@ -30,7 +30,7 @@ export class AuthService {
         password: hashedPassword,
       });
       const jwt = await this.jwtService.signAsync(
-        { sub: authCreated.id },
+        { sub: authCreated.id, role: authCreated.role },
         { secret: this.configService.get<string>('JWT_SECRET') },
       );
       return new JwtDto(jwt);
@@ -52,7 +52,7 @@ export class AuthService {
         HttpStatus.NOT_FOUND,
       );
     const jwt = await this.jwtService.signAsync(
-      { sub: auth.id },
+      { sub: auth.id, role: auth.role },
       { secret: this.configService.get<string>('JWT_SECRET') },
     );
     return new JwtDto(jwt);
@@ -69,5 +69,10 @@ export class AuthService {
   ): Promise<boolean> {
     if (!hash) return false;
     return await bcrypt.compare(password, hash);
+  }
+
+  async me(data: any) {
+    console.log(data);
+    // return this.authRepository.me();
   }
 }
