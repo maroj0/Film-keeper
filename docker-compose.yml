@@ -14,8 +14,10 @@ services:
       DATABASE_USER: admin
       DATABASE_PASS: admin
       DATABASE_URI: 'mongodb://database:27017'
+      PORT: 8000
+      JWT_SECRET: CONEXA123!
     ports:
-      - '4000:4000'
+      - '8000:8000'
     depends_on:
       - database
 
