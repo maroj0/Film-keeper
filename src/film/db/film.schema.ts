@@ -30,3 +30,12 @@ export class Film {
 }
 
 export const FilmSchema = SchemaFactory.createForClass(Film);
+
+FilmSchema.set('toJSON', {
+  virtuals: true,
+  versionKey: false,
+  transform: (_, ret) => {
+    ret.id = ret._id;
+    delete ret._id;
+  },
+});

@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { Film } from './db/film.schema';
 import { CreateFilmDto } from './dto/film-request.dto';
 import { FilmResponseDto } from './dto/film-response.dto';
+import { FilmDto } from './dto/film.dto';
 
 @Injectable()
 export class FilmRepository {
@@ -16,13 +17,18 @@ export class FilmRepository {
   }
 
   async findOne(id: string): Promise<FilmResponseDto> {
-    const film = await this.filmModel.findOne({ _id: id }).exec();
-    return film ? new FilmResponseDto(film.toObject()) : null;
+    try {
+      const film = await this.filmModel.findOne({ _id: id }).exec();
+      return film ? new FilmResponseDto(film.toObject()) : null;
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
   }
 
-  async create(createFilmDto: CreateFilmDto): Promise<Film> {
+  async create(createFilmDto: CreateFilmDto): Promise<FilmDto> {
     const createdFilm = new this.filmModel(createFilmDto);
-    return await createdFilm.save();
+    return new FilmDto((await createdFilm.save()).toObject());
   }
 
   async findByTitle(title: string): Promise<Film> {

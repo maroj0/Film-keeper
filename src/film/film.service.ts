@@ -1,10 +1,16 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { FilmRepository } from './film.repository';
 import { CreateFilmDto } from './dto/film-request.dto';
+import { lastValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
+import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class FilmService {
-  constructor(private readonly filmRepository: FilmRepository) {}
+  constructor(
+    private readonly filmRepository: FilmRepository,
+    private readonly httpService: HttpService,
+  ) {}
 
   async findAll() {
     return this.filmRepository.findAll();
@@ -43,6 +49,31 @@ export class FilmService {
   }
 
   async updateStarWars() {
-    // return this.filmRepository.updateStartWars();
+    const url = 'https://swapi.dev/api/films/';
+    try {
+      const response = await lastValueFrom(this.httpService.get(url));
+      const results = await Promise.all(
+        response.data.results.map(async (film) => {
+          await this.filmRepository.create({
+            title: 'Star Wars: ' + film.title,
+            director: film.director,
+            producer: film.producer,
+            release_date: film.release_date,
+            cover: film.url,
+            synopsis: film.opening_crawl.slice(0, 500),
+            gender: 'Science fiction',
+          });
+        }),
+      );
+      return results;
+    } catch (error) {
+      throw new Error(`Error al obtener datos de SWAPI: ${error.message}`);
+    }
+  }
+
+  @Cron('0 8 * * * *')
+  async updateStarWarsCron() {
+    console.log('cron');
+    await this.updateStarWars();
   }
 }

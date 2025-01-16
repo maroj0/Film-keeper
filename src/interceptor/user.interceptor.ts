@@ -5,8 +5,8 @@ import {
   CallHandler,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { AuthRepository } from 'src/auth/auth.repository';
-import { ApiRequest } from 'src/types/apiRequest';
+import { AuthRepository } from '../auth/auth.repository';
+import { ApiRequest } from '../types/apiRequest';
 
 @Injectable()
 export class AttachUserDataInterceptor implements NestInterceptor {

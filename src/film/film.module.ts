@@ -8,11 +8,13 @@ import { AuthRepository } from 'src/auth/auth.repository';
 import { User, UserSchema } from 'src/auth/db/auth.schema';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from '../auth/guards/role.guards';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Film.name, schema: FilmSchema }]),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    HttpModule,
   ],
   controllers: [FilmController],
   providers: [
@@ -24,6 +26,6 @@ import { RolesGuard } from '../auth/guards/role.guards';
       useClass: RolesGuard,
     },
   ],
-  exports: [FilmService],
+  exports: [FilmService, FilmRepository],
 })
 export class FilmModule {}

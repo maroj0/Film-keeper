@@ -16,10 +16,10 @@ import { JwtGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateFilmDto } from './dto/film-request.dto';
 import { FilmResponseDto } from './dto/film-response.dto';
 import { Film } from './db/film.schema';
-import { AttachUserDataInterceptor } from 'src/interceptor/user.interceptor';
-import { ApiRequest } from 'src/types/apiRequest';
-import { Roles } from 'src/decorator/role.decorator';
-import { Role } from 'src/auth/db/auth.schema';
+import { AttachUserDataInterceptor } from '../interceptor/user.interceptor';
+import { ApiRequest } from '../types/apiRequest';
+import { Roles } from '../decorator/role.decorator';
+import { Role } from '../auth/db/auth.schema';
 
 @Controller('films')
 @ApiBearerAuth('JWT-auth')
@@ -37,6 +37,14 @@ export class FilmController {
   })
   async GetAll(): Promise<Film[]> {
     return this.filmService.findAll();
+  }
+
+  @Get('star_wars')
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: 'Update Star Wars films' })
+  @ApiResponse({ status: 200, description: 'Star Wars films updated' })
+  async updateStarWars() {
+    return this.filmService.updateStarWars();
   }
 
   @Get(':id')
@@ -101,13 +109,5 @@ export class FilmController {
   @ApiResponse({ status: 404, description: 'Film not found' })
   async findByTitle(@Param('title') title: string) {
     return this.filmService.findByTitle(title);
-  }
-
-  @Get('star_wars')
-  @Roles(Role.ADMIN)
-  @ApiOperation({ summary: 'Update Star Wars films' })
-  @ApiResponse({ status: 200, description: 'Star Wars films updated' })
-  async updateStarWars() {
-    return this.filmService.updateStarWars();
   }
 }

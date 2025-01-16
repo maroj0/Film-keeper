@@ -6,6 +6,7 @@ import { AuthController } from './auth/auth.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { FilmModule } from './film/film.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { FilmModule } from './film/film.module';
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRoot(process.env.DATABASE_URI, {}),
     FilmModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [AuthController, AppController],
   providers: [AppService],
