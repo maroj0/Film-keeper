@@ -1,73 +1,52 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+Backend NestJS con Docker y MongoDB
+Este proyecto está construido utilizando NestJS y MongoDB, y se ejecuta en un contenedor Docker. Sigue los pasos a continuación para levantar el entorno de desarrollo.
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Requisitos
+Docker
+Docker Compose
+Node.js (si prefieres correr el proyecto fuera de Docker)
+Variables de entorno
+Este proyecto requiere las siguientes variables de entorno:
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+DATABASE_URI: URI de conexión a la base de datos MongoDB (e.g., mongodb://mongo:27017/mydb).
+PORT: Puerto en el que el servidor de NestJS correrá (e.g., 3000).
+JWT_SECRET: Secreto para la firma de los JSON Web Tokens (JWT).
+Paso 1: Clonar el repositorio
+Primero, clona el repositorio en tu máquina local:
 
-## Description
+git clone https://github.com/tu-usuario/tu-repositorio.git
+cd tu-repositorio
+Paso 2: Crear el archivo .env
+Crea un archivo .env en la raíz del proyecto con las variables de entorno necesarias:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+DATABASE_URI=mongodb://mongo:27017/mi_base_de_datos
+PORT=3000
+JWT_SECRET=tu_secreto_aqui
+Asegúrate de reemplazar los valores de las variables por los correspondientes a tu entorno.
 
-## Installation
+Paso 3: Levantar los contenedores con Docker Compose
+El proyecto utiliza docker-compose para levantar tanto el backend como el servicio de MongoDB. Para ejecutar todo el sistema, usa el siguiente comando:
 
-```bash
-$ npm install
-```
+docker-compose up --build
+Este comando construye y levanta los contenedores de Docker según lo definido en el archivo docker-compose.yml.
 
-## Running the app
+MongoDB correrá en el contenedor mongo.
+El backend de NestJS se expondrá en el puerto que hayas configurado en el archivo .env (por defecto, en el puerto 3000).
+Paso 4: Acceder al Backend
+Una vez que los contenedores estén en ejecución, puedes acceder a la aplicación backend en:
 
-```bash
-# development
-$ npm run start
+http://localhost:3000
+Donde 3000 es el puerto configurado en tu archivo .env.
 
-# watch mode
-$ npm run start:dev
+Paso 5: Ejecutar Docker (opcional)
 
-# production mode
-$ npm run start:prod
-```
+Dockerfile
+Si necesitas personalizar el contenedor de Docker para NestJS, aquí tienes un ejemplo básico de un Dockerfile:
 
-## Test
 
-```bash
-# unit tests
-$ npm run test
+Paso 6: Detener los contenedores
+Cuando ya no necesites los contenedores activos, puedes detenerlos con:
 
-# e2e tests
-$ npm run test:e2e
 
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+docker-compose down
+Esto detendrá y eliminará los contenedores y redes definidos en el archivo docker-compose.yml.
