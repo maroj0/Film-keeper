@@ -1,20 +1,28 @@
-# Usa una imagen oficial de Node.js como base
-FROM node:18
+# Application Docker file Configuration
+# Visit https://docs.docker.com/engine/reference/builder/
+# Using multi stage build
 
-# Crea y establece el directorio de trabajo
-WORKDIR /usr/src/app
+# Prepare the image when build
+# also use to minimize the docker image
+FROM node:14-alpine as builder
 
-# Copia el package.json y el package-lock.json
+WORKDIR /app
 COPY package*.json ./
-
-# Instala las dependencias
 RUN npm install
-
-# Copia el resto del código fuente
 COPY . .
+RUN npm run build
 
-# Expone el puerto de la aplicación
-EXPOSE 3000
 
-# Inicia la aplicación
-CMD ["npm", "run", "start:prod"]
+# Build the image as production
+# So we can minimize the size
+FROM node:14-alpine
+
+WORKDIR /app
+COPY package*.json ./
+ENV PORT=4000
+ENV NODE_ENV=Production
+RUN npm install
+COPY --from=builder /app/dist ./dist
+EXPOSE ${PORT}
+
+CMD ["npm", "run", "start"]
