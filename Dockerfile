@@ -31,11 +31,11 @@ COPY nest-cli.json ./
 COPY --from=deps /app/node_modules ./node_modules
 COPY config ./config
 COPY src ./src
-ENV PORT=4000
+ENV PORT=${PORT}
+ENV JWT_SECRET=${JWT_SECRET}
 
 ENV NODE_ENV=Production
-ENV DATABASE_URI=mongodb://mongo:27017/mi_base_de_datos
-ENV JWT_SECRET=CONEXA123!
+ENV DATABASE_URI=${DATABASE_URI}
 RUN npm install
 COPY --from=builder /app/dist ./dist
 EXPOSE ${PORT}
