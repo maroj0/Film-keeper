@@ -1,5 +1,6 @@
 # ---- Etapa 1: Construcción de la aplicación ----
-FROM node:latest-alpine AS builder
+FROM node:20-alpine AS builder
+
 
 WORKDIR /app
 
@@ -14,7 +15,7 @@ COPY . .
 RUN npm run build
 
 # ---- Etapa 2: Creación de la imagen de producción ----
-FROM node:latest-alpine AS production
+FROM node:20-alpine AS production
 
 WORKDIR /app
 
